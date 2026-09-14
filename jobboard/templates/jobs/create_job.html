@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="panel p-4">
+            <h1 class="fw-bold mb-2">{% if lang == 'en' %}Post a Job{% else %}Објави оглас за работа{% endif %}</h1>
+            <p class="muted-label mb-4">{% if lang == 'en' %}Create a clear listing so candidates know what to expect.{% else %}Креирајте јасен оглас за кандидатите да знаат што се очекува.{% endif %}</p>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">{% if lang == 'en' %}Company name{% else %}Име на компанија{% endif %}</label>
+                        <input name="company_name" class="form-control" value="{{ user.profile.company_name }}" placeholder="{% if lang == 'en' %}Company{% else %}Компанија{% endif %}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{% if lang == 'en' %}Job title{% else %}Назив на позиција{% endif %}</label>
+                        <input name="title" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{% if lang == 'en' %}Category{% else %}Категорија{% endif %}</label>
+                        <select name="category" class="form-select" required>
+                            {% for value, label in categories %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{% if lang == 'en' %}Location{% else %}Локација{% endif %}</label>
+                        <input name="location" class="form-control" placeholder="{% if lang == 'en' %}Skopje or remote{% else %}Скопје или remote{% endif %}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{% if lang == 'en' %}Salary{% else %}Плата{% endif %}</label>
+                        <input type="number" name="salary" class="form-control" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% if lang == 'en' %}Description{% else %}Опис{% endif %}</label>
+                        <textarea name="description" rows="5" class="form-control" required></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% if lang == 'en' %}Requirements{% else %}Квалификации и услови{% endif %}</label>
+                        <textarea name="requirements" rows="4" class="form-control" required></textarea>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary mt-4">{% if lang == 'en' %}Publish Job{% else %}Објави оглас{% endif %}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

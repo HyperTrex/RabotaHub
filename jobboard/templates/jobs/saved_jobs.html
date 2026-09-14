@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="fw-bold mb-2">{% if lang == 'en' %}Saved Jobs{% else %}Зачувани огласи{% endif %}</h1>
+<p class="muted-label mb-4">{% if lang == 'en' %}Keep track of roles you want to revisit.{% else %}Следете ги позициите на кои сакате да се вратите.{% endif %}</p>
+
+<div class="row g-4">
+    {% for item in saved %}
+        <div class="col-md-6 col-xl-4">
+            <div class="job-card">
+                <span class="badge-soft">{{ item.job.category }}</span>
+                <h5 class="fw-bold mt-3">{{ item.job.title }}</h5>
+                <p class="muted-label">{{ item.job.employer.profile.company_name|default:item.job.employer.username }}</p>
+                <p>{{ item.job.description|truncatewords:18 }}</p>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>{{ item.job.location }}</span>
+                    <span class="text-success fw-bold">{{ item.job.salary }} ден.</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'job_detail' item.job.id %}" class="btn btn-primary flex-fill">{% if lang == 'en' %}Details{% else %}Детали{% endif %}</a>
+                    <a href="{% url 'save_job' item.job.id %}?next={{ request.get_full_path|urlencode }}" class="btn btn-outline-warning">{% if lang == 'en' %}Remove{% else %}Отстрани{% endif %}</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="panel p-4 text-center">{% if lang == 'en' %}You have no saved jobs yet.{% else %}Сè уште немате зачувани огласи.{% endif %}</div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="panel p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <a href="{% url 'messages' %}" class="btn btn-sm btn-outline-dark mb-2">
+                        ← {% if lang == 'en' %}Back to Messages{% else %}Назад кон пораки{% endif %}
+                    </a>
+                    <h1 class="fw-bold mb-0">{{ message.subject }}</h1>
+                </div>
+                <div class="text-end">
+                    <small class="muted-label">{{ message.created_at|date:"d.m.Y H:i" }}</small>
+                </div>
+            </div>
+            
+            <div class="d-flex align-items-start gap-3 mb-4">
+                <div class="user-avatar" style="width: 48px; height: 48px; font-size: 18px;">
+                    {{ message.sender.username|first|upper }}
+                </div>
+                <div class="flex-fill">
+                    <div class="fw-bold">{{ message.sender.username }}</div>
+                    <div class="muted-label small">{% if lang == 'en' %}Sent to{% else %}Испратено до{% endif %} {{ message.recipient.username }}</div>
+                </div>
+            </div>
+            
+            {% if message.job %}
+                <div class="panel p-3 mb-4 bg-light">
+                    <div class="d-flex align-items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                        </svg>
+                        <span class="fw-bold">{% if lang == 'en' %}Related Job:{% else %}Поврзана работа:{% endif %}</span>
+                        <a href="{% url 'job_detail' message.job.id %}" class="text-decoration-none">{{ message.job.title }}</a>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="panel p-4 mb-4">
+                <div class="prose">{{ message.body|linebreaks }}</div>
+            </div>
+            
+            {% if message.recipient == request.user %}
+                <div class="d-flex gap-2">
+                    <a href="{% url 'compose_message' %}?recipient={{ message.sender.username }}" class="btn btn-primary">
+                        {% if lang == 'en' %}Reply{% else %}Одговори{% endif %}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="panel p-4">
+            <h6 class="fw-bold mb-3">{% if lang == 'en' %}Message Details{% else %}Детали за пораката{% endif %}</h6>
+            <div class="mb-3">
+                <div class="muted-label small">{% if lang == 'en' %}From{% else %}Од{% endif %}</div>
+                <div class="fw-semibold">{{ message.sender.username }}</div>
+            </div>
+            <div class="mb-3">
+                <div class="muted-label small">{% if lang == 'en' %}To{% else %}До{% endif %}</div>
+                <div class="fw-semibold">{{ message.recipient.username }}</div>
+            </div>
+            <div class="mb-3">
+                <div class="muted-label small">{% if lang == 'en' %}Date{% else %}Датум{% endif %}</div>
+                <div class="fw-semibold">{{ message.created_at|date:"d.m.Y H:i" }}</div>
+            </div>
+            <div class="mb-3">
+                <div class="muted-label small">{% if lang == 'en' %}Status{% else %}Статус{% endif %}</div>
+                <div class="fw-semibold">
+                    {% if message.is_read %}
+                        <span class="badge bg-success">{% if lang == 'en' %}Read{% else %}Прочитано{% endif %}</span>
+                    {% else %}
+                        <span class="badge bg-primary">{% if lang == 'en' %}Unread{% else %}Непрочитано{% endif %}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

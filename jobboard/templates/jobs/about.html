@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="panel p-4">
+    <div class="eyebrow">{% if lang == 'en' %}About{% else %}За нас{% endif %}</div>
+    <h1 class="fw-bold mb-3">{% if lang == 'en' %}About RabotaHub{% else %}За РаботаХаб{% endif %}</h1>
+    <p class="lead mb-4">
+        {% if lang == 'en' %}
+            RabotaHub helps candidates discover serious opportunities and helps employers reach better applicants faster.
+        {% else %}
+            РаботаХаб им помага на кандидатите да откријат сериозни можности, а на работодавците побрзо да стигнат до подобри апликанти.
+        {% endif %}
+    </p>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-tile panel p-4 h-100">
+                <h5 class="fw-bold">{% if lang == 'en' %}Local focus{% else %}Локален фокус{% endif %}</h5>
+                <p class="muted-label mb-0">{% if lang == 'en' %}Built around Macedonian cities, salaries, and hiring needs.{% else %}Изградено околу македонски градови, плати и потреби за вработување.{% endif %}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-tile panel p-4 h-100">
+                <h5 class="fw-bold">{% if lang == 'en' %}Clear applications{% else %}Јасни апликации{% endif %}</h5>
+                <p class="muted-label mb-0">{% if lang == 'en' %}Candidates apply directly and employers review everything from one dashboard.{% else %}Кандидатите аплицираат директно, а работодавците разгледуваат од една табла.{% endif %}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-tile panel p-4 h-100">
+                <h5 class="fw-bold">{% if lang == 'en' %}Better matching{% else %}Подобро поврзување{% endif %}</h5>
+                <p class="muted-label mb-0">{% if lang == 'en' %}Filters and detailed posts make it easier to find the right role or person.{% else %}Филтрите и деталните огласи помагаат полесно да се најде вистинска позиција или кандидат.{% endif %}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="panel p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <div class="eyebrow">{% if lang == 'en' %}Hiring workspace{% else %}Работен простор за вработување{% endif %}</div>
+            <h1 class="fw-bold">{% if lang == 'en' %}Employer Dashboard{% else %}Работодавна контролна табла{% endif %}</h1>
+            <p class="muted-label mb-0">{% if lang == 'en' %}Track listings, review applications, and keep hiring moving.{% else %}Следете огласи, разгледувајте апликации и движете го процесот на вработување.{% endif %}</p>
+        </div>
+        <a href="{% url 'create_job' %}" class="btn btn-primary">{% if lang == 'en' %}Post Job{% else %}Објави оглас{% endif %}</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="panel p-4 stat-box">
+            <div class="h2 fw-bold">{{ total_jobs }}</div>
+            <div class="muted-label">{% if lang == 'en' %}Published jobs{% else %}Објавени огласи{% endif %}</div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel p-4 stat-box">
+            <div class="h2 fw-bold">{{ total_applications }}</div>
+            <div class="muted-label">{% if lang == 'en' %}Received applications{% else %}Примени апликации{% endif %}</div>
+        </div>
+    </div>
+</div>
+
+{% for item in data %}
+    <div class="panel p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h4 class="fw-bold mb-1">{{ item.job.title }}</h4>
+                <div class="muted-label">{{ item.job.location }} · {{ item.job.salary }} ден. · {{ item.job.created_at|date:"d.m.Y" }}</div>
+            </div>
+            <a href="{% url 'job_detail' item.job.id %}" class="btn btn-outline-primary">{% if lang == 'en' %}View{% else %}Види{% endif %}</a>
+        </div>
+
+        <hr>
+
+        <h6 class="fw-bold">{% if lang == 'en' %}Applications{% else %}Апликации{% endif %}</h6>
+        {% for app in item.applications %}
+            <div class="border rounded p-3 mb-2">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="fw-semibold">{{ app.applicant.username }}</div>
+                        <div class="muted-label mb-2">{{ app.created_at|date:"d.m.Y H:i" }}</div>
+                        <p class="mb-0">{{ app.message }}</p>
+                    </div>
+                    <a href="{% url 'compose_message' %}?recipient={{ app.applicant.username }}&job_id={{ item.job.id }}" class="btn btn-sm btn-outline-primary">
+                        {% if lang == 'en' %}Message{% else %}Порака{% endif %}
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <p class="muted-label mb-0">{% if lang == 'en' %}No applications yet.{% else %}Сè уште нема апликации.{% endif %}</p>
+        {% endfor %}
+    </div>
+{% empty %}
+    <div class="panel p-4 text-center">
+        <p class="mb-3">{% if lang == 'en' %}You have not posted any jobs yet.{% else %}Сè уште немате објавено оглас.{% endif %}</p>
+        <a href="{% url 'create_job' %}" class="btn btn-primary">{% if lang == 'en' %}Create your first listing{% else %}Креирај прв оглас{% endif %}</a>
+    </div>
+{% endfor %}
+{% endblock %}

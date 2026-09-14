@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="panel p-4">
+            <h1 class="fw-bold mb-4">{% if lang == 'en' %}Apply for {{ job.title }}{% else %}Аплицирај за {{ job.title }}{% endif %}</h1>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Contact Information -->
+                <h5 class="fw-bold mb-3">{% if lang == 'en' %}Contact Information{% else %}Контакт информации{% endif %}</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">{% if lang == 'en' %}Phone{% else %}Телефон{% endif %}</label>
+                        <input type="tel" name="phone" class="form-control" placeholder="{% if lang == 'en' %}Your phone number{% else %}Вашиот телефонски број{% endif %}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{% if lang == 'en' %}Email{% else %}Е-пошта{% endif %}</label>
+                        <input type="email" name="email" class="form-control" placeholder="{% if lang == 'en' %}Your email address{% else %}Вашата е-пошта{% endif %}">
+                    </div>
+                </div>
+
+                <!-- Direct Links -->
+                <h5 class="fw-bold mb-3">{% if lang == 'en' %}Professional Links{% else %}Професионални линкови{% endif %}</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label">LinkedIn</label>
+                        <input type="url" name="linkedin_url" class="form-control" placeholder="https://linkedin.com/in/...">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">GitHub</label>
+                        <input type="url" name="github_url" class="form-control" placeholder="https://github.com/...">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">{% if lang == 'en' %}Portfolio{% else %}Портфолио{% endif %}</label>
+                        <input type="url" name="portfolio_url" class="form-control" placeholder="https://...">
+                    </div>
+                </div>
+
+                <!-- CV/Resume Upload -->
+                <h5 class="fw-bold mb-3">{% if lang == 'en' %}Resume/CV{% else %}Резиме/CV{% endif %}</h5>
+                <div class="mb-4">
+                    <div class="border-dashed p-5 text-center rounded bg-light" style="border: 2px dashed #dfe7f1;">
+                        <div class="mb-3">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#165dff" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <p class="mb-2">{% if lang == 'en' %}Drag and drop your resume here, or{% else %}Повлечете го вашето резиме овде, или{% endif %}</p>
+                        <input type="file" name="resume" class="form-control" accept=".pdf,.doc,.docx" style="max-width: 300px; margin: 0 auto;">
+                        <p class="text-muted small mt-2">{% if lang == 'en' %}Supported formats: PDF, DOC, DOCX{% else %}Поддржани формати: PDF, DOC, DOCX{% endif %}</p>
+                    </div>
+                </div>
+
+                <!-- Screening Questions -->
+                <h5 class="fw-bold mb-3">{% if lang == 'en' %}Screening Questions{% else %}Прашања за селекција{% endif %}</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">{% if lang == 'en' %}Are you legally eligible to work in this country?{% else %}Дали сте законски способни да работите во оваа земја?{% endif %}</label>
+                        <select name="work_eligibility" class="form-select">
+                            <option value="">{% if lang == 'en' %}Select an option{% else %}Изберете опција{% endif %}</option>
+                            <option value="yes">{% if lang == 'en' %}Yes{% else %}Да{% endif %}</option>
+                            <option value="no">{% if lang == 'en' %}No{% else %}Не{% endif %}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{% if lang == 'en' %}Earliest start date{% else %}Најран датум на почеток{% endif %}</label>
+                        <input type="date" name="start_date" class="form-control">
+                    </div>
+                </div>
+
+                <!-- Cover Letter -->
+                <h5 class="fw-bold mb-3">{% if lang == 'en' %}Cover Letter (Optional){% else %}Покривно писмо (Опционално){% endif %}</h5>
+                <div class="mb-4">
+                    <textarea name="cover_letter" rows="5" class="form-control" placeholder="{% if lang == 'en' %}Tell us why you're interested in this role and what makes you a great fit...{% else %}Кажете ни зошто сте заинтересирани за оваа позиција и што ве прави одличен кандидат...{% endif %}"></textarea>
+                </div>
+
+                <!-- Message (required) -->
+                <h5 class="fw-bold mb-3">{% if lang == 'en' %}Message to Employer{% else %}Порака до работодавецот{% endif %}</h5>
+                <div class="mb-4">
+                    <textarea name="message" rows="4" class="form-control" placeholder="{% if lang == 'en' %}Briefly explain why you are a good fit for this position.{% else %}Накратко објаснете зошто сте добар кандидат за оваа позиција.{% endif %}" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg">{% if lang == 'en' %}Submit Application{% else %}Испрати апликација{% endif %}</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Job Summary Sidebar -->
+    <div class="col-lg-4">
+        <div class="panel p-4">
+            <h6 class="fw-bold mb-3">{% if lang == 'en' %}Job Summary{% else %}Резиме на работата{% endif %}</h6>
+            
+            <div class="mb-3">
+                <div class="muted-label small">{% if lang == 'en' %}Position{% else %}Позиција{% endif %}</div>
+                <div class="fw-semibold">{{ job.title }}</div>
+            </div>
+            
+            <div class="mb-3">
+                <div class="muted-label small">{% if lang == 'en' %}Company{% else %}Компанија{% endif %}</div>
+                <div class="fw-semibold">{{ job.employer.profile.company_name|default:job.employer.username }}</div>
+            </div>
+            
+            <div class="mb-3">
+                <div class="muted-label small">{% if lang == 'en' %}Location{% else %}Локација{% endif %}</div>
+                <div class="fw-semibold">{{ job.location }}</div>
+            </div>
+            
+            <div class="mb-3">
+                <div class="muted-label small">{% if lang == 'en' %}Salary{% else %}Плата{% endif %}</div>
+                <div class="fw-bold text-success h4">{{ job.salary }} ден.</div>
+            </div>
+            
+            <div class="mb-3">
+                <div class="muted-label small">{% if lang == 'en' %}Category{% else %}Категорија{% endif %}</div>
+                <span class="badge-soft">{{ job.category }}</span>
+            </div>
+            
+            <hr class="my-3">
+            
+            <div class="muted-label small mb-2">{% if lang == 'en' %}Posted{% else %}Објавено{% endif %}</div>
+            <div class="small">{{ job.created_at|date:"d.m.Y" }}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

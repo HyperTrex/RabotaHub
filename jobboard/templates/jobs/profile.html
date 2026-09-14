@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="panel p-4">
+            <h1 class="fw-bold mb-4">{% if lang == 'en' %}My Profile{% else %}Мој Профил{% endif %}</h1>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="user-avatar mx-auto mb-3" style="width: 80px; height: 80px; font-size: 28px;">
+                            {{ user.username|first|upper }}
+                        </div>
+                        <h5 class="fw-bold">{{ user.get_full_name|default:user.username }}</h5>
+                        <p class="muted-label">{{ user.email }}</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">{% if lang == 'en' %}Username{% else %}Корисничко име{% endif %}</label>
+                        <input type="text" class="form-control" value="{{ user.username }}" readonly>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">{% if lang == 'en' %}Email{% else %}Е-пошта{% endif %}</label>
+                        <input type="email" class="form-control" value="{{ user.email }}" readonly>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">{% if lang == 'en' %}Account Type{% else %}Тип на сметка{% endif %}</label>
+                        <input type="text" class="form-control" value="{% if user_type == 'employer' %}{% if lang == 'en' %}Employer{% else %}Работодавец{% endif %}{% else %}{% if lang == 'en' %}Job Seeker{% else %}Барател на работа{% endif %}{% endif %}" readonly>
+                    </div>
+                    
+                    {% if user_type == 'employer' %}
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">{% if lang == 'en' %}Company Name{% else %}Име на компанија{% endif %}</label>
+                            <input type="text" class="form-control" value="{{ user.profile.company_name|default:'Not set' }}" readonly>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <h5 class="fw-bold mb-3">{% if lang == 'en' %}Account Statistics{% else %}Статистика на сметката{% endif %}</h5>
+            <div class="row g-3">
+                {% if user_type == 'seeker' %}
+                    <div class="col-md-4">
+                        <div class="panel p-3 text-center">
+                            <div class="h3 fw-bold text-primary">{{ saved_jobs_count|default:0 }}</div>
+                            <div class="muted-label small">{% if lang == 'en' %}Saved Jobs{% else %}Зачувани огласи{% endif %}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel p-3 text-center">
+                            <div class="h3 fw-bold text-success">{{ applications_count|default:0 }}</div>
+                            <div class="muted-label small">{% if lang == 'en' %}Applications{% else %}Апликации{% endif %}</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-md-4">
+                        <div class="panel p-3 text-center">
+                            <div class="h3 fw-bold text-primary">{{ posted_jobs_count|default:0 }}</div>
+                            <div class="muted-label small">{% if lang == 'en' %}Posted Jobs{% else %}Објавени огласи{% endif %}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel p-3 text-center">
+                            <div class="h3 fw-bold text-success">{{ received_applications_count|default:0 }}</div>
+                            <div class="muted-label small">{% if lang == 'en' %}Received Applications{% else %}Примени апликации{% endif %}</div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="panel p-4">
+            <h6 class="fw-bold mb-3">{% if lang == 'en' %}Quick Actions{% else %}Брзи акции{% endif %}</h6>
+            <div class="d-grid gap-2">
+                {% if user_type == 'seeker' %}
+                    <a href="{% url 'saved_jobs' %}" class="btn btn-outline-primary">
+                        {% if lang == 'en' %}View Saved Jobs{% else %}Види зачувани огласи{% endif %}
+                    </a>
+                    <a href="{% url 'job_list' %}" class="btn btn-outline-primary">
+                        {% if lang == 'en' %}Browse Jobs{% else %}Пребарај огласи{% endif %}
+                    </a>
+                {% else %}
+                    <a href="{% url 'create_job' %}" class="btn btn-outline-primary">
+                        {% if lang == 'en' %}Post New Job{% else %}Објави нов оглас{% endif %}
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">
+                        {% if lang == 'en' %}View Dashboard{% else %}Види контролна табла{% endif %}
+                    </a>
+                {% endif %}
+                <a href="{% url 'notifications' %}" class="btn btn-outline-dark">
+                    {% if lang == 'en' %}View Notifications{% else %}Види известувања{% endif %}
+                </a>
+                <a href="{% url 'messages' %}" class="btn btn-outline-dark">
+                    {% if lang == 'en' %}View Messages{% else %}Види пораки{% endif %}
+                </a>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="d-grid gap-2">
+                <a href="{% url 'logout' %}" class="btn btn-danger">
+                    {% if lang == 'en' %}Logout{% else %}Одјави се{% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

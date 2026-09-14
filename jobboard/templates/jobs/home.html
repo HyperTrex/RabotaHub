@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block full_width %}
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="badge-soft bg-white text-primary">
+                    {% if lang == 'en' %}Trusted hiring platform for Macedonia{% else %}Платформа за вработување во Македонија{% endif %}
+                </span>
+                <h1 class="display-3 fw-bold mt-4">
+                    {% if lang == 'en' %}Serious jobs. Better candidates. Faster hiring.{% else %}Сериозни огласи. Подобри кандидати. Побрзо вработување.{% endif %}
+                </h1>
+                <p class="lead mt-3 mb-4">
+                    {% if lang == 'en' %}
+                        RabotaHub connects growing companies with professionals in IT, marketing, design, finance, sales, tourism, and operations.
+                    {% else %}
+                        РаботаХаб ги поврзува компаниите во раст со професионалци од ИТ, маркетинг, дизајн, финансии, продажба, туризам и операции.
+                    {% endif %}
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'job_list' %}" class="btn btn-primary btn-lg">{% if lang == 'en' %}Browse Jobs{% else %}Пребарај огласи{% endif %}</a>
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'register' %}" class="btn btn-light btn-lg">{% if lang == 'en' %}Create Profile{% else %}Креирај профил{% endif %}</a>
+                    {% else %}
+                        <a href="{% url 'profile' %}" class="btn btn-light btn-lg">{% if lang == 'en' %}My Profile{% else %}Мој профил{% endif %}</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <form class="hero-search" method="GET" action="{% url 'job_list' %}">
+                    <div class="eyebrow mb-2">{% if lang == 'en' %}Smart search{% else %}Паметно пребарување{% endif %}</div>
+                    <h4 class="text-dark fw-bold mb-3">{% if lang == 'en' %}Find your next role{% else %}Најди ја следната позиција{% endif %}</h4>
+                    <div class="mb-3">
+                        <label class="form-label text-dark fw-semibold">{% if lang == 'en' %}Keyword{% else %}Клучен збор{% endif %}</label>
+                        <input name="q" class="form-control form-control-lg" placeholder="{% if lang == 'en' %}Developer, designer, sales...{% else %}Програмер, дизајнер, продажба...{% endif %}">
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-7">
+                            <label class="form-label text-dark fw-semibold">{% if lang == 'en' %}Location{% else %}Локација{% endif %}</label>
+                            <input name="location" class="form-control" placeholder="{% if lang == 'en' %}Skopje, remote...{% else %}Скопје, remote...{% endif %}">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label text-dark fw-semibold">{% if lang == 'en' %}Min salary{% else %}Мин. плата{% endif %}</label>
+                            <input name="min_salary" type="number" class="form-control" placeholder="45000">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">{% if lang == 'en' %}Search openings{% else %}Пребарај позиции{% endif %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="panel p-4 stat-box metric-card">
+            <div class="h2 fw-bold">{{ stats.jobs }}</div>
+            <div class="muted-label">{% if lang == 'en' %}Active job posts{% else %}Активни огласи{% endif %}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel p-4 stat-box metric-card">
+            <div class="h2 fw-bold">{{ stats.employers }}</div>
+            <div class="muted-label">{% if lang == 'en' %}Verified employers{% else %}Проверени работодавци{% endif %}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel p-4 stat-box metric-card">
+            <div class="h2 fw-bold">{{ stats.applications }}</div>
+            <div class="muted-label">{% if lang == 'en' %}Applications sent{% else %}Испратени апликации{% endif %}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel p-4 stat-box metric-card">
+            <div class="h2 fw-bold">{{ stats.seekers }}</div>
+            <div class="muted-label">{% if lang == 'en' %}Job seekers{% else %}Кандидати{% endif %}</div>
+        </div>
+    </div>
+</div>
+
+<div class="trust-strip mb-5">
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-4">
+            <div class="eyebrow text-info mb-2">{% if lang == 'en' %}Companies hiring now{% else %}Компании што вработуваат{% endif %}</div>
+            <h3 class="fw-bold mb-0">{% if lang == 'en' %}Used by growing teams across the country.{% else %}Користено од тимови во раст низ државата.{% endif %}</h3>
+        </div>
+        <div class="col-lg-8">
+            <div class="d-flex flex-wrap gap-2">
+                {% for company in hiring_companies %}
+                    <span class="company-pill">{{ company }}</span>
+                {% empty %}
+                    <span class="muted-label">{% if lang == 'en' %}Companies will appear here as employers post jobs.{% else %}Компаниите ќе се појават тука кога работодавците ќе објават огласи.{% endif %}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <div class="eyebrow">{% if lang == 'en' %}Fresh opportunities{% else %}Нови можности{% endif %}</div>
+        <h2 class="fw-bold mb-1">{% if lang == 'en' %}Featured Job Positions{% else %}Истакнати работни позиции{% endif %}</h2>
+        <p class="muted-label mb-0">{% if lang == 'en' %}A sample of roles currently open on the market.{% else %}Пример од позиции кои моментално се отворени на пазарот.{% endif %}</p>
+    </div>
+    <a href="{% url 'job_list' %}" class="btn btn-outline-primary">{% if lang == 'en' %}View all jobs{% else %}Види ги сите огласи{% endif %}</a>
+</div>
+
+<div class="row g-4 mb-5">
+    {% for job in featured_jobs %}
+        <div class="col-md-6 col-xl-4">
+            <div class="job-card">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge-soft">{{ job.category }}</span>
+                    <span class="salary-chip">{{ job.salary }} ден.</span>
+                </div>
+                <h5 class="fw-bold">{{ job.title }}</h5>
+                <p class="muted-label mb-2">{{ job.employer.profile.company_name|default:job.employer.username }}</p>
+                <div class="job-meta mb-3">
+                    <span>{{ job.location }}</span>
+                    <span>{% if lang == 'en' %}Full time{% else %}Полно работно време{% endif %}</span>
+                </div>
+                <p>{{ job.description|truncatewords:18 }}</p>
+                <a href="{% url 'job_detail' job.id %}" class="btn btn-sm btn-primary">{% if lang == 'en' %}View details{% else %}Види детали{% endif %}</a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="panel p-4">{% if lang == 'en' %}Run migrations to load the demo job market.{% else %}Стартувајте ги миграциите за да се вчита демо пазарот со огласи.{% endif %}</div>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="panel p-4 feature-tile h-100">
+            <h5 class="fw-bold">{% if lang == 'en' %}For candidates{% else %}За кандидати{% endif %}</h5>
+            <p class="muted-label mb-0">{% if lang == 'en' %}Search, save, compare salaries, and apply directly from one account.{% else %}Пребарувајте, зачувувајте, споредувајте плати и аплицирајте од еден профил.{% endif %}</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel p-4 feature-tile h-100">
+            <h5 class="fw-bold">{% if lang == 'en' %}For employers{% else %}За работодавци{% endif %}</h5>
+            <p class="muted-label mb-0">{% if lang == 'en' %}Publish listings, receive applications, and review candidates from a simple dashboard.{% else %}Објавувајте огласи, примајте апликации и прегледувајте кандидати од јасна табла.{% endif %}</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel p-4 feature-tile h-100">
+            <h5 class="fw-bold">{% if lang == 'en' %}Local market focus{% else %}Фокус на локалниот пазар{% endif %}</h5>
+            <p class="muted-label mb-0">{% if lang == 'en' %}Roles are organized around real Macedonian cities, salaries, and company needs.{% else %}Позициите се организирани околу реални градови, плати и потреби на компании.{% endif %}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

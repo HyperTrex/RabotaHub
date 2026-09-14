@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="panel p-4 mb-4">
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-8">
+            <div class="eyebrow">{% if lang == 'en' %}Job marketplace{% else %}Пазар на работни позиции{% endif %}</div>
+            <h1 class="fw-bold mb-2">{% if lang == 'en' %}Find Jobs{% else %}Најди работа{% endif %}</h1>
+            <p class="muted-label mb-0">{% if lang == 'en' %}Explore curated openings by role, salary, category, and location.{% else %}Истражете внимателно избрани позиции по улога, плата, категорија и локација.{% endif %}</p>
+        </div>
+        <div class="col-lg-4">
+            <div class="d-flex gap-2 flex-wrap justify-content-lg-end">
+                <span class="company-pill">IT</span>
+                <span class="company-pill">Marketing</span>
+                <span class="company-pill">Design</span>
+                <span class="company-pill">Remote</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="GET" class="panel p-4 mb-4">
+    <div class="row g-3 align-items-end">
+        <div class="col-lg-3">
+            <label class="form-label">{% if lang == 'en' %}Keyword{% else %}Клучен збор{% endif %}</label>
+            <input type="text" name="q" value="{{ filters.q }}" class="form-control" placeholder="{% if lang == 'en' %}Job title{% else %}Назив на позиција{% endif %}">
+        </div>
+        <div class="col-lg-3">
+            <label class="form-label">{% if lang == 'en' %}Category{% else %}Категорија{% endif %}</label>
+            <select name="category" class="form-select">
+                <option value="">{% if lang == 'en' %}All categories{% else %}Сите категории{% endif %}</option>
+                {% for value, label in categories %}
+                    <option value="{{ value }}" {% if filters.category == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-lg-2">
+            <label class="form-label">{% if lang == 'en' %}Location{% else %}Локација{% endif %}</label>
+            <input name="location" value="{{ filters.location }}" class="form-control" placeholder="{% if lang == 'en' %}City{% else %}Град{% endif %}">
+        </div>
+        <div class="col-lg-2">
+            <label class="form-label">{% if lang == 'en' %}Min salary{% else %}Минимум плата{% endif %}</label>
+            <input type="number" name="min_salary" value="{{ filters.min_salary }}" class="form-control" placeholder="40000">
+        </div>
+        <div class="col-lg-2">
+            <button class="btn btn-primary w-100">{% if lang == 'en' %}Filter{% else %}Филтрирај{% endif %}</button>
+        </div>
+    </div>
+</form>
+
+<div class="row g-4">
+    {% for job in jobs %}
+        <div class="col-md-6 col-xl-4">
+            <div class="job-card">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge-soft">{{ job.category }}</span>
+                    <small class="muted-label">{{ job.created_at|date:"d.m.Y" }}</small>
+                </div>
+
+                <a href="{% url 'job_detail' job.id %}" class="text-decoration-none text-dark">
+                    <h5 class="fw-bold">{{ job.title }}</h5>
+                </a>
+
+                <p class="muted-label mb-2">{{ job.employer.profile.company_name|default:job.employer.username }}</p>
+                <p class="mb-3">{{ job.description|truncatewords:20 }}</p>
+
+                <div class="job-meta mb-3">
+                    <span>{{ job.location }}</span>
+                    <span>{% if lang == 'en' %}Full time{% else %}Полно работно време{% endif %}</span>
+                    <span>{% if lang == 'en' %}Posted{% else %}Објавено{% endif %} {{ job.created_at|date:"d.m" }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="salary-chip">{{ job.salary }} ден.</span>
+                    <span class="muted-label">{% if lang == 'en' %}monthly{% else %}месечно{% endif %}</span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="{% url 'job_detail' job.id %}" class="btn btn-primary flex-fill">
+                        {% if lang == 'en' %}Details{% else %}Детали{% endif %}
+                    </a>
+                    {% if user.is_authenticated and user_type == 'seeker' %}
+                        <a href="{% url 'save_job' job.id %}?next={{ request.get_full_path|urlencode }}" class="btn btn-outline-warning">
+                            {% if job.id in saved_jobs %}{% if lang == 'en' %}Saved{% else %}Зачувано{% endif %}{% else %}{% if lang == 'en' %}Save{% else %}Зачувај{% endif %}{% endif %}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="panel p-4 text-center">
+                {% if lang == 'en' %}No jobs match your search.{% else %}Нема огласи што одговараат на пребарувањето.{% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% if jobs.paginator.num_pages > 1 %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if jobs.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ jobs.previous_page_number }}{% if current_filters %}&{{ current_filters }}{% endif %}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="d-none d-sm-inline ms-1">{% if lang == 'en' %}Previous{% else %}Претходна{% endif %}</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="d-none d-sm-inline ms-1">{% if lang == 'en' %}Previous{% else %}Претходна{% endif %}</span>
+                    </span>
+                </li>
+            {% endif %}
+
+            {% for page_num in jobs.paginator.page_range %}
+                {% if page_num == jobs.number %}
+                    <li class="page-item active">
+                        <span class="page-link bg-primary border-primary">{{ page_num }}</span>
+                    </li>
+                {% elif page_num == 1 or page_num == jobs.paginator.num_pages or page_num == jobs.number|add:'-1' or page_num == jobs.number|add:'1' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_num }}{% if current_filters %}&{{ current_filters }}{% endif %}">{{ page_num }}</a>
+                    </li>
+                {% elif page_num == jobs.number|add:'-2' or page_num == jobs.number|add:'2' %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if jobs.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ jobs.next_page_number }}{% if current_filters %}&{{ current_filters }}{% endif %}" aria-label="Next">
+                        <span class="d-none d-sm-inline me-1">{% if lang == 'en' %}Next{% else %}Следна{% endif %}</span>
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <span class="d-none d-sm-inline me-1">{% if lang == 'en' %}Next{% else %}Следна{% endif %}</span>
+                        <span aria-hidden="true">&raquo;</span>
+                    </span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+{% endblock %}

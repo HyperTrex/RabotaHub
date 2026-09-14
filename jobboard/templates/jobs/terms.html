@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="panel p-4">
+    <div class="eyebrow">{% if lang == 'en' %}Terms{% else %}Услови{% endif %}</div>
+    <h1 class="fw-bold mb-3">{% if lang == 'en' %}Terms of Use{% else %}Услови за користење{% endif %}</h1>
+    <p>{% if lang == 'en' %}Users should provide accurate information, post legitimate jobs, and use RabotaHub respectfully and lawfully.{% else %}Корисниците треба да внесуваат точни информации, да објавуваат легитимни огласи и да ја користат РаботаХаб одговорно и законски.{% endif %}</p>
+    <p class="muted-label mb-0">{% if lang == 'en' %}This demo page is a placeholder for final production terms.{% else %}Оваа демо страница е основа за финални продукциски услови.{% endif %}</p>
+</div>
+{% endblock %}

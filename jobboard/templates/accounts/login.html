@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="panel p-4">
+            <h1 class="fw-bold mb-2">{% if lang == 'en' %}Login{% else %}Најава{% endif %}</h1>
+            <p class="muted-label mb-4">{% if lang == 'en' %}Continue to your job search or employer dashboard.{% else %}Продолжете кон барање работа или работодавна табла.{% endif %}</p>
+
+            {% if error == 'invalid_login' %}
+                <div class="alert alert-danger">
+                    {% if lang == 'en' %}
+                        The username or password is incorrect.
+                    {% else %}
+                        Корисничкото име или лозинката не се точни.
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+
+                <label class="form-label">{% if lang == 'en' %}Username{% else %}Корисничко име{% endif %}</label>
+                <input name="username" class="form-control mb-3" value="{{ username }}" required>
+
+                <label class="form-label">{% if lang == 'en' %}Password{% else %}Лозинка{% endif %}</label>
+                <input type="password" name="password" class="form-control mb-3" required>
+
+                <button type="submit" class="btn btn-primary w-100">{% if lang == 'en' %}Login{% else %}Најави се{% endif %}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="panel p-4">
+            <span class="badge-soft">{{ job.category }}</span>
+            <h1 class="fw-bold mt-3">{{ job.title }}</h1>
+            <p class="muted-label mb-4">{{ job.employer.profile.company_name|default:job.employer.username }} · {{ job.location }} · {{ job.created_at|date:"d.m.Y" }}</p>
+
+            <div class="job-meta mb-4">
+                <span>{% if lang == 'en' %}Full time{% else %}Полно работно време{% endif %}</span>
+                <span>{% if lang == 'en' %}Fast response{% else %}Брз одговор{% endif %}</span>
+                <span>{% if lang == 'en' %}Verified employer{% else %}Проверен работодавец{% endif %}</span>
+            </div>
+
+            <h5 class="fw-bold">{% if lang == 'en' %}Job Description{% else %}Опис на работата{% endif %}</h5>
+            <p>{{ job.description|linebreaks }}</p>
+
+            <h5 class="fw-bold mt-4">{% if lang == 'en' %}Requirements{% else %}Потребни квалификации{% endif %}</h5>
+            <p>{{ job.requirements|linebreaks }}</p>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="panel p-4 mb-4">
+            <div class="mb-3">
+                <div class="muted-label">{% if lang == 'en' %}Salary{% else %}Плата{% endif %}</div>
+                <div class="h4 fw-bold text-success">{{ job.salary }} ден.</div>
+            </div>
+            <div class="mb-4">
+                <div class="muted-label">{% if lang == 'en' %}Location{% else %}Локација{% endif %}</div>
+                <div class="fw-semibold">{{ job.location }}</div>
+            </div>
+
+            {% if user.is_authenticated and user_type == 'seeker' %}
+                {% if has_applied %}
+                    <button class="btn btn-success w-100 mb-2" disabled>{% if lang == 'en' %}Already Applied{% else %}Веќе аплициравте{% endif %}</button>
+                {% else %}
+                    <a href="{% url 'apply_job' job.id %}" class="btn btn-primary w-100 mb-2">{% if lang == 'en' %}Apply Now{% else %}Аплицирај сега{% endif %}</a>
+                {% endif %}
+                <a href="{% url 'save_job' job.id %}?next={{ request.get_full_path|urlencode }}" class="btn btn-outline-warning w-100 mb-2">
+                    {% if is_saved %}{% if lang == 'en' %}Remove from saved{% else %}Отстрани од зачувани{% endif %}{% else %}{% if lang == 'en' %}Save Job{% else %}Зачувај оглас{% endif %}{% endif %}
+                </a>
+                <a href="{% url 'compose_message' %}?job_id={{ job.id }}" class="btn btn-outline-dark w-100">
+                    {% if lang == 'en' %}Message Employer{% else %}Порака до работодавец{% endif %}
+                </a>
+            {% elif not user.is_authenticated %}
+                <a href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}" class="btn btn-primary w-100">{% if lang == 'en' %}Login to apply{% else %}Најави се за аплицирање{% endif %}</a>
+            {% endif %}
+        </div>
+
+        <div class="panel p-4">
+            <h6 class="fw-bold">{% if lang == 'en' %}Company snapshot{% else %}Профил на компанија{% endif %}</h6>
+            <p class="muted-label mb-3">{% if lang == 'en' %}This employer is actively reviewing applications on RabotaHub.{% else %}Овој работодавец активно ги разгледува апликациите на РаботаХаб.{% endif %}</p>
+            <div class="job-meta">
+                <span>{% if lang == 'en' %}Verified{% else %}Проверено{% endif %}</span>
+                <span>{% if lang == 'en' %}Local hiring{% else %}Локално вработување{% endif %}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

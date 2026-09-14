@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="panel p-4 h-100">
+            <div class="eyebrow">{% if lang == 'en' %}Contact{% else %}Контакт{% endif %}</div>
+            <h1 class="fw-bold mb-3">{% if lang == 'en' %}Get in touch{% else %}Контактирајте нè{% endif %}</h1>
+            <p class="muted-label">{% if lang == 'en' %}Questions about posting jobs, applying, or partnerships? Reach out to our team.{% else %}Имате прашања за објавување огласи, аплицирање или партнерства? Контактирајте го нашиот тим.{% endif %}</p>
+            <div class="job-meta mt-4">
+                <span>contact@rabotahub.mk</span>
+                <span>+389 2 555 0100</span>
+                <span>{% if lang == 'en' %}Mon-Fri, 09:00-17:00{% else %}Пон-Пет, 09:00-17:00{% endif %}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="panel p-4 h-100">
+            <h5 class="fw-bold">{% if lang == 'en' %}Office{% else %}Канцеларија{% endif %}</h5>
+            <p class="mb-1">{% if lang == 'en' %}Partizanski Odredi 12{% else %}Партизански Одреди 12{% endif %}</p>
+            <p class="muted-label mb-0">{% if lang == 'en' %}Skopje, Macedonia{% else %}Скопје, Македонија{% endif %}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

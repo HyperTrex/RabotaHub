@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="panel p-4">
+            <h1 class="fw-bold mb-2">{% if lang == 'en' %}Create Account{% else %}Креирај профил{% endif %}</h1>
+            <p class="muted-label mb-4">{% if lang == 'en' %}Register as a candidate or employer.{% else %}Регистрирајте се како кандидат или работодавец.{% endif %}</p>
+
+            {% if error == 'username_exists' %}
+                <div class="alert alert-warning">
+                    {% if lang == 'en' %}
+                        That username is already taken. Please choose another username or log in with your existing account.
+                    {% else %}
+                        Тоа корисничко име веќе постои. Изберете друго корисничко име или најавете се со постоечкиот профил.
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <label class="form-label">{% if lang == 'en' %}Username{% else %}Корисничко име{% endif %}</label>
+                <input name="username" class="form-control mb-3" value="{{ form_data.username }}" required>
+
+                <label class="form-label">{% if lang == 'en' %}Password{% else %}Лозинка{% endif %}</label>
+                <input type="password" name="password" class="form-control mb-3" required>
+
+                <label class="form-label">{% if lang == 'en' %}Account type{% else %}Тип на профил{% endif %}</label>
+                <select id="user-type" name="user_type" class="form-select mb-3">
+                    <option value="seeker" {% if form_data.user_type == 'seeker' %}selected{% endif %}>{% if lang == 'en' %}Job Seeker{% else %}Кандидат{% endif %}</option>
+                    <option value="employer" {% if form_data.user_type == 'employer' %}selected{% endif %}>{% if lang == 'en' %}Employer{% else %}Работодавец{% endif %}</option>
+                </select>
+
+                <div id="company-name-field" class="mb-3" {% if form_data.user_type != 'employer' %}hidden{% endif %}>
+                    <label class="form-label">{% if lang == 'en' %}Company name{% else %}Име на компанија{% endif %}</label>
+                    <input id="company-name" name="company_name" class="form-control" value="{{ form_data.company_name }}" {% if form_data.user_type == 'employer' %}required{% endif %}>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">{% if lang == 'en' %}Register{% else %}Регистрирај се{% endif %}</button>
+            </form>
+
+            <script>
+                (function () {
+                    var userType = document.getElementById('user-type');
+                    var companyField = document.getElementById('company-name-field');
+                    var companyInput = document.getElementById('company-name');
+
+                    function toggleCompanyName() {
+                        var isEmployer = userType.value === 'employer';
+                        companyField.hidden = !isEmployer;
+                        companyInput.required = isEmployer;
+                        if (!isEmployer) {
+                            companyInput.value = '';
+                        }
+                    }
+
+                    userType.addEventListener('change', toggleCompanyName);
+                    toggleCompanyName();
+                })();
+            </script>
+        </div>
+    </div>
+</div>
+{% endblock %}

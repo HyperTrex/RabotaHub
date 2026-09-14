@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="panel p-4">
+            <h1 class="fw-bold mb-4">{% if lang == 'en' %}Compose New Message{% else %}Состави нова порака{% endif %}</h1>
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{% if lang == 'en' %}Recipient{% else %}Примач{% endif %}</label>
+                    <select name="recipient" class="form-select" required>
+                        <option value="">{% if lang == 'en' %}Select recipient{% else %}Изберете примач{% endif %}</option>
+                        {% for user in possible_recipients %}
+                            <option value="{{ user.username }}" {% if job and job.employer == user %}selected{% endif %}>
+                                {{ user.username }} {% if user.profile.company_name %}({{ user.profile.company_name }}){% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                {% if job %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{% if lang == 'en' %}Related Job{% else %}Поврзана работа{% endif %}</label>
+                        <input type="text" class="form-control" value="{{ job.title }}" readonly>
+                        <input type="hidden" name="job_id" value="{{ job.id }}">
+                    </div>
+                {% endif %}
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{% if lang == 'en' %}Subject{% else %}Тема{% endif %}</label>
+                    <input type="text" name="subject" class="form-control" required 
+                           placeholder="{% if lang == 'en' %}Enter message subject{% else %}Внесете тема на пораката{% endif %}"
+                           {% if job %}value="Regarding: {{ job.title }}"{% endif %}>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{% if lang == 'en' %}Message{% else %}Порака{% endif %}</label>
+                    <textarea name="body" rows="8" class="form-control" required
+                              placeholder="{% if lang == 'en' %}Write your message here...{% else %}Напишете ја вашата порака овде...{% endif %}"></textarea>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        {% if lang == 'en' %}Send Message{% else %}Испрати порака{% endif %}
+                    </button>
+                    <a href="{% url 'messages' %}" class="btn btn-outline-dark">
+                        {% if lang == 'en' %}Cancel{% else %}Откажи{% endif %}
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="panel p-4">
+            <h6 class="fw-bold mb-3">{% if lang == 'en' %}Tips{% else %}Совети{% endif %}</h6>
+            <ul class="list-unstyled small">
+                <li class="mb-2">
+                    <strong>{% if lang == 'en' %}Be Professional{% else %}Бидете професионални{% endif %}</strong>
+                    <p class="muted-label">{% if lang == 'en' %}Use clear, professional language{% else %}Користете јасен, професионален јазик{% endif %}</p>
+                </li>
+                <li class="mb-2">
+                    <strong>{% if lang == 'en' %}Be Specific{% else %}Бидете конкретни{% endif %}</strong>
+                    <p class="muted-label">{% if lang == 'en' %}Include relevant details about the job or application{% else %}Вклучете релевантни детали за работата или апликацијата{% endif %}</p>
+                </li>
+                <li class="mb-2">
+                    <strong>{% if lang == 'en' %}Keep it Concise{% else %}Бидете кратки{% endif %}</strong>
+                    <p class="muted-label">{% if lang == 'en' %}Respect the recipient's time with clear, brief messages{% else %}Поштете го времето на примачот со јасни, кратки пораки{% endif %}</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
